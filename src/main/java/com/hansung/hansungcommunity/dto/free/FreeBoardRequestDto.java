@@ -27,12 +27,21 @@ public class FreeBoardRequestDto {
         this.content = content;
     }
 
+    public FreeBoardRequestDto(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
+
     public static FreeBoardRequestDto from(FreeBoard freeBoard) {
         return new FreeBoardRequestDto(
                 freeBoard.getId(),
                 freeBoard.getTitle(),
                 freeBoard.getContent()
         );
+    }
+
+    public static FreeBoardRequestDto of(String title, String content) {
+        return new FreeBoardRequestDto(title, content);
     }
 
 }

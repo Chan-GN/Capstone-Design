@@ -1,14 +1,14 @@
 package com.hansung.hansungcommunity.dto.user;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.validation.constraints.Size;
 import java.util.List;
 
 @Getter
+@Builder
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserRequestDto {
 
     private String studentId;
@@ -24,3 +24,4 @@ public class UserRequestDto {
     private String picture;
 
 }
+
