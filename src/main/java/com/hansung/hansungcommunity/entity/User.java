@@ -36,12 +36,6 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Bookmark> bookmarks = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
-    private List<Reply> replies = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user")
-    private List<Adopt> qnaAdopt = new ArrayList<>();
-
     @ManyToMany
     @JoinTable(name = "user_skill",
             joinColumns = {@JoinColumn(name = "stu_id")},
@@ -49,8 +43,6 @@ public class User {
     )
     private Set<Skill> skills;
 
-    @OneToMany(mappedBy = "user")
-    private List<Summary> summaries = new ArrayList<>();
 
 
     private User(String studentId, String name, String nickname, String introduce, String track1, String track2, String profileImg, Set<Skill> skills) {
