@@ -4,6 +4,7 @@ import com.hansung.hansungcommunity.entity.NoticeBoard;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -34,5 +35,9 @@ public interface NoticeRepository extends JpaRepository<NoticeBoard, Long> {
             "FROM NoticeBoard n " +
             "WHERE n.title LIKE %:search% OR n.content LIKE %:search% ")
     long countWithSearch(@Param("search") String search);
+
+    @Modifying
+    @Query("UPDATE Board b SET b.views = b.views + 1 WHERE b.id = :id")
+    int increaseViewsById(@Param("id") Long id);
 
 }

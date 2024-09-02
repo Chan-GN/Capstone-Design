@@ -89,10 +89,10 @@ public class RecruitBoardService {
      */
     @Transactional
     public void increaseHits(Long boardId) {
-        RecruitBoard board = recruitBoardRepository.findById(boardId)
-                .orElseThrow(() -> new BoardNotFoundException("조회수 증가 실패, 해당하는 게시글이 없습니다."));
-
-        board.increaseViews();
+        int updatedRows = recruitBoardRepository.increaseViewsById(boardId);
+        if (updatedRows == 0) {
+            throw new BoardNotFoundException("조회수 증가 실패, 해당하는 게시글이 없습니다.");
+        }
     }
 
     /**

@@ -181,14 +181,15 @@ public class NoticeService {
      */
     @Transactional
     public void increaseHits(Long boardId) {
-        NoticeBoard board = noticeRepository.findById(boardId)
-                .orElseThrow(() -> new BoardNotFoundException("조회수 증가 실패, 해당하는 게시글이 없습니다."));
-
-        board.increaseViews();
+        int updatedRows = noticeRepository.increaseViewsById(boardId);
+        if (updatedRows == 0) {
+            throw new BoardNotFoundException("조회수 증가 실패, 해당하는 게시글이 없습니다.");
+        }
     }
 
     public NoticeBoard getPost(Long boardId) {
         return noticeRepository.findById(boardId)
                 .orElseThrow(() -> new BoardNotFoundException("게시글 조회 실패, 해당하는 게시글이 없습니다."));
     }
+
 }

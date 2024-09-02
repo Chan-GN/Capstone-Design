@@ -1,7 +1,6 @@
 package com.hansung.hansungcommunity.service;
 
 
-import com.hansung.hansungcommunity.util.ImageUtils;
 import com.hansung.hansungcommunity.dto.media.ImageDto;
 import com.hansung.hansungcommunity.dto.qna.*;
 import com.hansung.hansungcommunity.entity.QnaBoard;
@@ -9,6 +8,7 @@ import com.hansung.hansungcommunity.entity.User;
 import com.hansung.hansungcommunity.exception.BoardNotFoundException;
 import com.hansung.hansungcommunity.repository.QnaBoardRepository;
 import com.hansung.hansungcommunity.repository.UserRepository;
+import com.hansung.hansungcommunity.util.ImageUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -104,10 +104,10 @@ public class QnaBoardService {
      */
     @Transactional
     public void increaseHits(Long boardId) {
-        QnaBoard board = qnaBoardRepository.findById(boardId)
-                .orElseThrow(() -> new BoardNotFoundException("조회수 증가 실패, 해당하는 게시글이 없습니다."));
-
-        board.increaseViews();
+        int updatedRows = qnaBoardRepository.increaseViewsById(boardId);
+        if (updatedRows == 0) {
+            throw new BoardNotFoundException("조회수 증가 실패, 해당하는 게시글이 없습니다.");
+        }
     }
 
     /**

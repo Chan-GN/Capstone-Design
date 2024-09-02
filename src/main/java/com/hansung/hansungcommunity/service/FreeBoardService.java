@@ -1,6 +1,5 @@
 package com.hansung.hansungcommunity.service;
 
-import com.hansung.hansungcommunity.util.ImageUtils;
 import com.hansung.hansungcommunity.dto.free.*;
 import com.hansung.hansungcommunity.dto.media.ImageDto;
 import com.hansung.hansungcommunity.entity.FreeBoard;
@@ -8,6 +7,7 @@ import com.hansung.hansungcommunity.entity.User;
 import com.hansung.hansungcommunity.exception.BoardNotFoundException;
 import com.hansung.hansungcommunity.repository.FreeBoardRepository;
 import com.hansung.hansungcommunity.repository.UserRepository;
+import com.hansung.hansungcommunity.util.ImageUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -103,10 +103,10 @@ public class FreeBoardService {
      */
     @Transactional
     public void increaseHits(Long boardId) {
-        FreeBoard board = freeBoardRepository.findById(boardId)
-                .orElseThrow(() -> new BoardNotFoundException("조회수 증가 실패, 해당하는 게시글이 없습니다."));
-
-        board.increaseViews();
+        int updatedRows = freeBoardRepository.increaseViewsById(boardId);
+        if (updatedRows == 0) {
+            throw new BoardNotFoundException("조회수 증가 실패, 해당하는 게시글이 없습니다.");
+        }
     }
 
     /**

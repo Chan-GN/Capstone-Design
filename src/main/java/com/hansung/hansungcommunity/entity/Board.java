@@ -43,10 +43,6 @@ public abstract class Board extends ModifiedEntity {
         this.id = id;
     }
 
-    public void increaseViews() {
-        this.views++;
-    }
-
     public String getBoardType() {
         return this.getClass().getSimpleName(); // 게시글 타입은 엔티티 클래스의 이름(기본값)
     }
