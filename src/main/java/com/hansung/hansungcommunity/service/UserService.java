@@ -8,11 +8,11 @@ import com.hansung.hansungcommunity.entity.Skill;
 import com.hansung.hansungcommunity.entity.User;
 import com.hansung.hansungcommunity.exception.DuplicateStudentException;
 import com.hansung.hansungcommunity.exception.SkillNotFoundException;
-import com.hansung.hansungcommunity.exception.UserNotFoundException;
 import com.hansung.hansungcommunity.repository.AdoptRepository;
 import com.hansung.hansungcommunity.repository.PartyRepository;
 import com.hansung.hansungcommunity.repository.SkillRepository;
 import com.hansung.hansungcommunity.repository.UserRepository;
+import com.hansung.hansungcommunity.repository.student.UserQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +31,7 @@ public class UserService {
     private final AdoptRepository adoptRepository;
     private final SkillRepository skillRepository;
     private final PartyRepository partyRepository;
+    private final UserQueryRepository userQueryRepository;
 
     /**
      * 회원가입
@@ -62,9 +63,9 @@ public class UserService {
     }
 
     public UserInfoDto getUserInfo(Long stuId) {
-        User user = userRepository.findById(stuId).orElseThrow(() -> new UserNotFoundException("유저 정보 조회 실패, 해당하는 유저가 없습니다."));
-        UserInfoDto userInfoDto = UserInfoDto.from(user);
-        userInfoDto.setApplication((int) partyRepository.countByUserId(stuId));
+        UserInfoDto userInfoDto = userQueryRepository.getUserInfoById(stuId);
+        userQueryRepository.getUserSkillNames(stuId)
+                .forEach(userInfoDto::addSkills);
 
         return userInfoDto;
     }
