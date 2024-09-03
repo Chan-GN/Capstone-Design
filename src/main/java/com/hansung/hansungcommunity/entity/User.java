@@ -8,8 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -30,19 +28,12 @@ public class User {
     private String track2;
     private String profileImg; // 프로필 사진, 추후 개발
 
-    @OneToMany(mappedBy = "user")
-    private List<Board> postBoards = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user")
-    private List<Bookmark> bookmarks = new ArrayList<>();
-
     @ManyToMany
     @JoinTable(name = "user_skill",
             joinColumns = {@JoinColumn(name = "stu_id")},
             inverseJoinColumns = {@JoinColumn(name = "skill_id")}
     )
     private Set<Skill> skills;
-
 
 
     private User(String studentId, String name, String nickname, String introduce, String track1, String track2, String profileImg, Set<Skill> skills) {
