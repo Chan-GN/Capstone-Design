@@ -20,7 +20,7 @@ public class Summary extends AuditingFields {
     private boolean isFixed;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user")
+    @JoinColumn(name = "user_id")
     private User user;
 
     private Summary(Long summaryId, String content, boolean isFixed, String language) {
