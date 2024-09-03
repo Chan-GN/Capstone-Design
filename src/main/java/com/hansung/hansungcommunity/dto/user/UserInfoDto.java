@@ -16,22 +16,22 @@ public class UserInfoDto {
     private final String name;
     private final String track1;
     private final String track2;
-    private final int board;
-    private final int bookmark;
+    private final int postBoardCount;
+    private final int bookmarkCount;
     private final String introduce;
     private final String profileImg;
     private final Set<String> skills; // 관심 기술
     private int application;
 
-    private UserInfoDto(Long id, String studentId, String name, String nickname, String track1, String track2, int board, int bookmark, String introduce, String profileImg, Set<Skill> skills) {
+    private UserInfoDto(Long id, String studentId, String name, String nickname, String track1, String track2, int postBoardCount, int bookmarkCount, String introduce, String profileImg, Set<Skill> skills) {
         this.id = id;
         this.studentId = studentId;
         this.name = name;
         this.nickname = nickname;
         this.track1 = track1;
         this.track2 = track2;
-        this.board = board;
-        this.bookmark = bookmark;
+        this.postBoardCount = postBoardCount;
+        this.bookmarkCount = bookmarkCount;
         this.introduce = introduce;
         this.profileImg = profileImg;
         this.skills = skills.stream().map(Skill::getName).collect(Collectors.toSet());
