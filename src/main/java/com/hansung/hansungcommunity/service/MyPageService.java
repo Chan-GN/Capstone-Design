@@ -2,10 +2,7 @@ package com.hansung.hansungcommunity.service;
 
 import com.hansung.hansungcommunity.dto.user.UserActivityDto;
 import com.hansung.hansungcommunity.dto.user.UserUpdateDto;
-import com.hansung.hansungcommunity.entity.Bookmark;
-import com.hansung.hansungcommunity.entity.Party;
-import com.hansung.hansungcommunity.entity.Skill;
-import com.hansung.hansungcommunity.entity.User;
+import com.hansung.hansungcommunity.entity.*;
 import com.hansung.hansungcommunity.exception.DuplicateNicknameException;
 import com.hansung.hansungcommunity.exception.SkillNotFoundException;
 import com.hansung.hansungcommunity.exception.UserNotFoundException;
@@ -16,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,6 +25,7 @@ public class MyPageService {
     private final UserRepository userRepository;
     private final SkillRepository skillRepository;
     private final PartyRepository partyRepository;
+    private final UserSkillRepository userSkillRepository;
 
     /**
      * 해당 접속 유저가 작성한 게시글 반환 (최신순서)
@@ -72,14 +69,27 @@ public class MyPageService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("유저 정보 수정 실패, 해당 유저가 없습니다."));
 
-        if (!user.getNickname().equals(dto.getNickname())) validateDuplicateNickname(dto.getNickname());
+        if (!user.getNickname().equals(dto.getNickname())) {
+            validateDuplicateNickname(dto.getNickname());
+        }
 
-        Set<Skill> skills = dto.getSkills().stream().map(s -> skillRepository.findByName(s)
-                        .orElseThrow(() -> new SkillNotFoundException("관심 기술 수정 실패, 해당하는 기술이 없습니다.")))
-                .collect(Collectors.toSet());
-
+        // 기본 사용자 정보 업데이트
         user.updateUserInfo(dto);
-        user.setSkills(skills);
+
+        // 기존 UserSkill 관계를 모두 제거
+        userSkillRepository.deleteByUserId(userId);
+
+        // 새로운 UserSkill 관계 생성 및 저장
+        List<Skill> skills = skillRepository.findByNameIn(dto.getSkills());
+        if (skills.size() != dto.getSkills().size()) {
+            throw new SkillNotFoundException("일부 스킬을 찾을 수 없습니다.");
+        }
+
+        List<UserSkill> newUserSkills = skills.stream()
+                .map(skill -> UserSkill.of(user, skill))
+                .collect(Collectors.toList());
+
+        userSkillRepository.saveAll(newUserSkills);
     }
 
     private void validateDuplicateNickname(String nickname) {

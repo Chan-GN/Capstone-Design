@@ -6,12 +6,10 @@ import com.hansung.hansungcommunity.dto.user.UserRankDto;
 import com.hansung.hansungcommunity.dto.user.UserRequestDto;
 import com.hansung.hansungcommunity.entity.Skill;
 import com.hansung.hansungcommunity.entity.User;
+import com.hansung.hansungcommunity.entity.UserSkill;
 import com.hansung.hansungcommunity.exception.DuplicateStudentException;
 import com.hansung.hansungcommunity.exception.SkillNotFoundException;
-import com.hansung.hansungcommunity.repository.AdoptRepository;
-import com.hansung.hansungcommunity.repository.PartyRepository;
-import com.hansung.hansungcommunity.repository.SkillRepository;
-import com.hansung.hansungcommunity.repository.UserRepository;
+import com.hansung.hansungcommunity.repository.*;
 import com.hansung.hansungcommunity.repository.student.UserQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,6 +29,7 @@ public class UserService {
     private final SkillRepository skillRepository;
     private final PartyRepository partyRepository;
     private final UserQueryRepository userQueryRepository;
+    private final UserSkillRepository userSkillRepository;
 
     /**
      * 회원가입
@@ -39,11 +37,23 @@ public class UserService {
     @Transactional // 필요 시 쓰기 전용
     public Long join(UserRequestDto dto) {
         validateDuplicateUser(dto);
-        Set<Skill> skills = dto.getSkills().stream().map(s -> skillRepository.findByName(s)
-                        .orElseThrow(() -> new SkillNotFoundException("회원가입 실패, 해당하는 기술이 없습니다.")))
-                .collect(Collectors.toSet());
+        User user = userRepository.save(User.from(dto));
 
-        User user = userRepository.save(User.of(dto, skills));
+        // 모든 필요한 스킬을 한 번에 조회
+        List<Skill> skills = skillRepository.findByNameIn(dto.getSkills());
+
+        // 존재하지 않는 스킬이 있는지 확인
+        if (skills.size() != dto.getSkills().size()) {
+            throw new SkillNotFoundException("회원가입 실패, 존재하지 않는 기술이 있습니다.");
+        }
+
+        // UserSkill 객체들을 생성
+        List<UserSkill> userSkills = skills.stream()
+                .map(skill -> UserSkill.of(user, skill))
+                .collect(Collectors.toList());
+
+        // 한 번의 호출로 모든 UserSkill 저장
+        userSkillRepository.saveAll(userSkills);
 
         return user.getId();
     }

@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Set;
 
 @Getter
 @Entity
@@ -28,15 +27,7 @@ public class User {
     private String track2;
     private String profileImg; // 프로필 사진, 추후 개발
 
-    @ManyToMany
-    @JoinTable(name = "user_skill",
-            joinColumns = {@JoinColumn(name = "stu_id")},
-            inverseJoinColumns = {@JoinColumn(name = "skill_id")}
-    )
-    private Set<Skill> skills;
-
-
-    private User(String studentId, String name, String nickname, String introduce, String track1, String track2, String profileImg, Set<Skill> skills) {
+    private User(String studentId, String name, String nickname, String introduce, String track1, String track2, String profileImg) {
         this.studentId = studentId;
         this.name = name;
         this.nickname = nickname;
@@ -44,10 +35,9 @@ public class User {
         this.track1 = track1;
         this.track2 = track2;
         this.profileImg = profileImg;
-        this.skills = skills;
     }
 
-    public static User of(UserRequestDto dto, Set<Skill> skills) {
+    public static User from(UserRequestDto dto) {
         return new User(
                 dto.getStudentId(),
                 dto.getName(),
@@ -55,13 +45,8 @@ public class User {
                 dto.getIntroduce(),
                 dto.getTrack1(),
                 dto.getTrack2(),
-                dto.getPicture(),
-                skills
+                dto.getPicture()
         );
-    }
-
-    public void setSkills(Set<Skill> skills) {
-        this.skills = skills;
     }
 
     public void updateUserInfo(UserUpdateDto dto) {

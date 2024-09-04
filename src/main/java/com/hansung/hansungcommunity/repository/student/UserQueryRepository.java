@@ -19,7 +19,7 @@ public interface UserQueryRepository extends JpaRepository<User, Long> {
             "FROM User u WHERE u.id = :userId")
     UserInfoDto getUserInfoById(@Param("userId") Long id);
 
-    @Query("SELECT s.name FROM User u JOIN u.skills s WHERE u.id = :userId")
+    @Query("SELECT s.name FROM UserSkill u JOIN u.skill s WHERE u.user.id = :userId")
     Set<String> getUserSkillNames(@Param("userId") Long userId);
 
 }

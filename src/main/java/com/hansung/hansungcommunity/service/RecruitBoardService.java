@@ -5,9 +5,7 @@ import com.hansung.hansungcommunity.entity.Party;
 import com.hansung.hansungcommunity.entity.RecruitBoard;
 import com.hansung.hansungcommunity.entity.User;
 import com.hansung.hansungcommunity.exception.*;
-import com.hansung.hansungcommunity.repository.PartyRepository;
-import com.hansung.hansungcommunity.repository.RecruitBoardRepository;
-import com.hansung.hansungcommunity.repository.UserRepository;
+import com.hansung.hansungcommunity.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,6 +26,8 @@ public class RecruitBoardService {
     private final RecruitBoardRepository recruitBoardRepository;
     private final UserRepository userRepository;
     private final PartyRepository partyRepository;
+    private final UserSkillRepository userSkillRepository;
+    private final SkillRepository skillRepository;
 
     /**
      * 게시글 저장
@@ -287,6 +287,8 @@ public class RecruitBoardService {
         if (recruitBoard.getUser().getId().equals(userId)) {
             return parties.stream().map(party -> {
                 ApplicantDto dto = ApplicantDto.from(party.getUser());
+                userSkillRepository.findSkillNameByUserId(party.getUser().getId())
+                        .forEach(dto::addSkillName);
                 dto.setMeetRequired(party.isMeetRequired());
                 if (party.getIsMeetOptional() == null) {
                     dto.setIsMeetOptional(null);

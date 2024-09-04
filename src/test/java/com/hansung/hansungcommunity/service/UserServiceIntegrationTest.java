@@ -3,14 +3,8 @@ package com.hansung.hansungcommunity.service;
 import com.hansung.hansungcommunity.dto.free.FreeBoardRequestDto;
 import com.hansung.hansungcommunity.dto.user.UserInfoDto;
 import com.hansung.hansungcommunity.dto.user.UserRequestDto;
-import com.hansung.hansungcommunity.entity.Bookmark;
-import com.hansung.hansungcommunity.entity.FreeBoard;
-import com.hansung.hansungcommunity.entity.Skill;
-import com.hansung.hansungcommunity.entity.User;
-import com.hansung.hansungcommunity.repository.BookmarkRepository;
-import com.hansung.hansungcommunity.repository.FreeBoardRepository;
-import com.hansung.hansungcommunity.repository.SkillRepository;
-import com.hansung.hansungcommunity.repository.UserRepository;
+import com.hansung.hansungcommunity.entity.*;
+import com.hansung.hansungcommunity.repository.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -45,6 +39,8 @@ class UserServiceIntegrationTest {
     private EntityManager entityManager;
 
     private User testUser;
+    @Autowired
+    private UserSkillRepository userSkillRepository;
 
     @BeforeEach
     void setup() {
@@ -64,7 +60,8 @@ class UserServiceIntegrationTest {
                 .skills(skillNames)
                 .build();
 
-        testUser = userRepository.save(User.of(dto, skills));
+        testUser = userRepository.save(User.from(dto));
+        skills.forEach((skill) -> userSkillRepository.save(UserSkill.of(testUser, skill)));
 
         FreeBoard board1 = freeBoardRepository.save(FreeBoard.createBoard(testUser, FreeBoardRequestDto.of("Test title 1", "Test content 1")));
         freeBoardRepository.save(FreeBoard.createBoard(testUser, FreeBoardRequestDto.of("Test title 2", "Test content 2")));

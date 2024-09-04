@@ -1,12 +1,11 @@
 package com.hansung.hansungcommunity.dto.recruit;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.hansung.hansungcommunity.entity.Skill;
 import com.hansung.hansungcommunity.entity.User;
 import lombok.Getter;
 
+import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * 신청자 정보를 담는 DTO
@@ -20,7 +19,7 @@ public class ApplicantDto {
     private final String introduce;
     private final String profileImg;
     private final String track1;
-    private final Set<String> skills;
+    private final Set<String> skills = new HashSet<>();
     @JsonProperty("isMeetRequired")
     private boolean isMeetRequired;
     @JsonProperty("isMeetOptional")
@@ -35,11 +34,14 @@ public class ApplicantDto {
         this.introduce = user.getIntroduce();
         this.profileImg = user.getProfileImg();
         this.track1 = user.getTrack1();
-        this.skills = user.getSkills().stream().map(Skill::getName).collect(Collectors.toSet());
     }
 
     public static ApplicantDto from(User user) {
         return new ApplicantDto(user);
+    }
+
+    public void addSkillName(String skillName) {
+        this.skills.add(skillName);
     }
 
     public void setMeetRequired(boolean meetRequired) {

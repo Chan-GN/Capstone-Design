@@ -3,10 +3,7 @@ package com.hansung.hansungcommunity.repository;
 import com.hansung.hansungcommunity.dto.free.FreeBoardRequestDto;
 import com.hansung.hansungcommunity.dto.user.UserInfoDto;
 import com.hansung.hansungcommunity.dto.user.UserRequestDto;
-import com.hansung.hansungcommunity.entity.Bookmark;
-import com.hansung.hansungcommunity.entity.FreeBoard;
-import com.hansung.hansungcommunity.entity.Skill;
-import com.hansung.hansungcommunity.entity.User;
+import com.hansung.hansungcommunity.entity.*;
 import com.hansung.hansungcommunity.repository.student.UserQueryRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -47,7 +44,9 @@ class UserQueryRepositoryTest {
                 .picture("example-uri/picture.jpg")
                 .build();
 
-        testUser = entityManager.persist(User.of(dto, Set.of(javaSkill, springSkill)));
+        testUser = entityManager.persist(User.from(dto));
+        entityManager.persist(UserSkill.of(testUser, javaSkill));
+        entityManager.persist(UserSkill.of(testUser, springSkill));
 
         FreeBoard board1 = entityManager.persist(FreeBoard.createBoard(testUser, FreeBoardRequestDto.of("Test title 1", "Test content 1")));
         entityManager.persist(FreeBoard.createBoard(testUser, FreeBoardRequestDto.of("Test title 2", "Test content 2")));

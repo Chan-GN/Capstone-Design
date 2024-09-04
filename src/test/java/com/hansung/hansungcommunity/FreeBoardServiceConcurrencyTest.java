@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -34,7 +33,7 @@ public class FreeBoardServiceConcurrencyTest {
     @Test
     public void testConcurrentHitsIncrease() throws InterruptedException {
         // 테스트용 사용자와 게시글 생성
-        User user = userRepository.save(User.of(UserRequestDto.builder().build(), Set.of()));
+        User user = userRepository.save(User.from(UserRequestDto.builder().build()));
         FreeBoard board = freeBoardRepository.save(FreeBoard.createBoard(
                 user,
                 FreeBoardRequestDto.of("title", "content")
