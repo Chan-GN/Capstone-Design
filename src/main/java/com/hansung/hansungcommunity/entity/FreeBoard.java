@@ -28,9 +28,4 @@ public class FreeBoard extends Board {
         );
     }
 
-    // 비즈니스 메소드
-    public void patch(FreeBoardRequestDto dto) {
-        updateTitleAndContent(dto.getTitle(), dto.getContent());
-    }
-
 }

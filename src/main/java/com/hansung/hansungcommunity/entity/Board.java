@@ -28,11 +28,11 @@ public abstract class Board extends ModifiedEntity {
     @JoinColumn(name = "stu_id")
     private User user;
     @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
-    private final List<Reply> replies = new ArrayList<>();
+    private List<Reply> replies = new ArrayList<>();
     @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
-    private final Set<Bookmark> bookmarks = new HashSet<>();
+    private Set<Bookmark> bookmarks = new HashSet<>();
     @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
-    private final List<FileEntity> fileEntity = new ArrayList<>();
+    private List<FileEntity> fileEntity = new ArrayList<>();
 
     protected Board(String title, String content) {
         this.title = title;
@@ -43,15 +43,15 @@ public abstract class Board extends ModifiedEntity {
         this.id = id;
     }
 
-    public String getBoardType() {
-        return this.getClass().getSimpleName(); // 게시글 타입은 엔티티 클래스의 이름(기본값)
-    }
-
     public void setUser(User user) {
         this.user = user;
     }
 
-    protected void updateTitleAndContent(String title, String content) {
+    public String getBoardType() {
+        return this.getClass().getSimpleName(); // 게시글 타입은 엔티티 클래스의 이름(기본값)
+    }
+
+    public void updateTitleAndContent(String title, String content) {
         this.title = title;
         this.content = content;
         modified();

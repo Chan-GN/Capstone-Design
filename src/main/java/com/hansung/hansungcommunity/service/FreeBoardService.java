@@ -49,7 +49,7 @@ public class FreeBoardService {
                 .orElseThrow(() -> new BoardNotFoundException("게시글 수정 실패, 해당하는 게시글이 없습니다."));
 
         // 게시글 수정
-        target.patch(dto);
+        target.updateTitleAndContent(dto.getTitle(), dto.getContent());
 
         return dto;
     }

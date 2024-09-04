@@ -28,9 +28,4 @@ public class NoticeBoard extends Board {
         );
     }
 
-    // 비즈니스 메소드
-    public void patch(NoticeBoardDto dto) {
-        updateTitleAndContent(dto.getTitle(), dto.getContent());
-    }
-
 }

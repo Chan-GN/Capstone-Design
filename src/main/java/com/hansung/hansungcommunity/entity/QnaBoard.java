@@ -29,7 +29,6 @@ public class QnaBoard extends Board {
 
     public void patch(QnaBoardRequestDto dto) {
         updateTitleAndContent(dto.getTitle(), dto.getContent());
-
         this.language = dto.getLanguage();
     }
 

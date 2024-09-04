@@ -117,7 +117,7 @@ public class NoticeService {
         NoticeBoard noticeBoard = noticeRepository.findById(boardId)
                 .orElseThrow(() -> new BoardNotFoundException("공지사항 수정 실패, 해당하는 게시글이 없습니다."));
 
-        noticeBoard.patch(dto);
+        noticeBoard.updateTitleAndContent(dto.getTitle(), dto.getContent());
 
         return NoticeBoardDto.from(noticeRepository.save(noticeBoard));
     }

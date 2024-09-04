@@ -49,7 +49,10 @@ public class RecruitBoard extends Board {
 
     public void patch(RecruitBoardRequestDto dto) {
         updateTitleAndContent(dto.getTitle(), dto.getContent());
+        updatePartyAndOptional(dto);
+    }
 
+    private void updatePartyAndOptional(RecruitBoardRequestDto dto) {
         if (dto.getOptional() != null)
             this.optional = dto.getOptional();
         this.party = dto.getParty();
